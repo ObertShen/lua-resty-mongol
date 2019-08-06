@@ -1,5 +1,3 @@
-Sorry for long time no maintaining. If you want to continue update it, please contact me.
-
 Name
 ======
 lua-resty-mongol - Lua Mongodb driver for ngx_lua base on the cosocket API
