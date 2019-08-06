@@ -3,8 +3,8 @@ local mod_name = (...):match ( "^(.*)%..-$" )
 local misc = require ( mod_name .. ".misc" )
 local attachpairs_start = misc.attachpairs_start
 
+local ngx = ngx
 local setmetatable = setmetatable
-local pcall = pcall
 
 local colmt = require ( mod_name .. ".colmt" )
 local gridfs = require ( mod_name .. ".gridfs" )
@@ -15,7 +15,7 @@ local dbmt = { __index = dbmethods }
 function dbmethods:cmd(q)
     local collection = "$cmd"
     local col = self:get_col(collection)
-    
+
     local c_id , r , t = col:query(q)
 
     if t.QueryFailure then
@@ -27,6 +27,16 @@ function dbmethods:cmd(q)
     else
         return r[1]
     end
+end
+
+function dbmethods:create_collection(name)
+    local r, err = self:cmd(attachpairs_start({
+            create = name ;
+         } , "create" ) )
+    if not r then
+        return nil, err
+    end
+    return 1
 end
 
 function dbmethods:listcollections ( )
@@ -48,7 +58,7 @@ end
 
 --  XOR two byte strings together
 local function xor_bytestr( a, b )
-    local res = ""    
+    local res = ""
     for i=1,#a do
         res = res .. string.char(bit.bxor(string.byte(a,i,i), string.byte(b, i, i)))
     end
@@ -59,12 +69,12 @@ end
 local function pbkdf2_hmac_sha1( pbkdf2_key, iterations, salt, len )
     local u1 = ngx.hmac_sha1(pbkdf2_key, salt .. string.char(0) .. string.char(0) .. string.char(0) .. string.char(1))
     local ui = u1
-    for i=1,iterations-1 do
+    for _=1,iterations-1 do
         u1 = ngx.hmac_sha1(pbkdf2_key, u1)
         ui = xor_bytestr(ui, u1)
     end
     if #ui < len then
-        for i=1,len-(#ui) do
+        for _=1,len-(#ui) do
             ui = string.char(0) .. ui
         end
     end

@@ -11,7 +11,7 @@ local le_uint_to_num = function ( s , i , j )
 	i , j = i or 1 , j or #s
 	local b = { strbyte ( s , i , j ) }
 	local n = 0
-	for i=#b , 1 , -1 do
+	for _=#b , 1 , -1 do
 		n = n*2^8 + b [ i ]
 	end
 	return n
@@ -20,8 +20,8 @@ local le_int_to_num = function ( s , i , j )
 	i , j = i or 1 , j or #s
 	local n = le_uint_to_num ( s , i , j )
 	local overflow = 2^(8*(j-i) + 7)
-	if n > 2^overflow then
-		n = - ( n % 2^overflow )
+	if n > overflow then
+		n = n - 2*overflow
 	end
 	return n
 end

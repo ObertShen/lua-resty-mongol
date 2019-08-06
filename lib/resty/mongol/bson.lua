@@ -70,7 +70,7 @@ local function read_document ( get , numerical )
 		elseif op == "\10" then -- Null
 			v = nil
 		elseif op == "\16" then --int32
-			v = le_int_to_num ( get ( 4 ) , 1 , 8 )
+			v = le_int_to_num ( get ( 4 ) , 1 , 4 )
         elseif op == "\17" then --int64
             v = le_int_to_num(get(8), 1, 8)
         elseif op == "\18" then --int64
