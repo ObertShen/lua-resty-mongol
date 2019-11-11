@@ -150,7 +150,7 @@ local function pack ( k , v )
 			return "\3" .. k .. "\0" .. doc
 		end
 	else
-		error ( "Failure converting " .. ot ..": " .. tostring ( v ) )
+		error ( "Failure converting " .. ot ..": ".. k .. ":" .. tostring ( v ) )
 	end
 end
 

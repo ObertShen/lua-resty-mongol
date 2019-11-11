@@ -15,7 +15,7 @@ local dbmt = { __index = dbmethods }
 function dbmethods:cmd(q)
     local collection = "$cmd"
     local col = self:get_col(collection)
-
+    
     local c_id , r , t = col:query(q)
 
     if t.QueryFailure then
@@ -29,7 +29,12 @@ function dbmethods:cmd(q)
     end
 end
 
-function dbmethods:create_collection(name)
+function dbmethods:listcollections ( )
+    local col = self:get_col("system.namespaces")
+    return col:find( { } )
+end
+
+function dbmethods:createCollection(name)
     local r, err = self:cmd(attachpairs_start({
             create = name ;
          } , "create" ) )
@@ -37,11 +42,6 @@ function dbmethods:create_collection(name)
         return nil, err
     end
     return 1
-end
-
-function dbmethods:listcollections ( )
-    local col = self:get_col("system.namespaces")
-    return col:find( { } )
 end
 
 function dbmethods:dropDatabase ( )
@@ -58,7 +58,7 @@ end
 
 --  XOR two byte strings together
 local function xor_bytestr( a, b )
-    local res = ""
+    local res = ""    
     for i=1,#a do
         res = res .. string.char(bit.bxor(string.byte(a,i,i), string.byte(b, i, i)))
     end
@@ -112,7 +112,7 @@ function dbmethods:auth_scram_sha1(username, password)
     local first_bare = "n="  .. user .. ",r="  .. nonce
     local sasl_start_payload = ngx.encode_base64("n,," .. first_bare)
     
-    r, err = self:cmd(attachpairs_start({
+    local r, err = self:cmd(attachpairs_start({
             saslStart = 1 ;
             mechanism = "SCRAM-SHA-1" ;
             autoAuthorize = 1 ;
