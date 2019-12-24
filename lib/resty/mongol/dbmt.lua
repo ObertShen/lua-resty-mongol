@@ -58,7 +58,7 @@ end
 
 --  XOR two byte strings together
 local function xor_bytestr( a, b )
-    local res = ""    
+    local res = ""
     for i=1,#a do
         res = res .. string.char(bit.bxor(string.byte(a,i,i), string.byte(b, i, i)))
     end

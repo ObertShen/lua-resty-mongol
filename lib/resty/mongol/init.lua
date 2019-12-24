@@ -1,5 +1,3 @@
-module("resty.mongol", package.seeall)
-
 local mod_name = (...)
 
 local assert , pcall = assert , pcall
@@ -125,7 +123,7 @@ end
 
 connmt.__call = connmethods.new_db_handle
 
-function new(self)
+local function new(self)
     return setmetatable ( {
             sock = socket();
             host = "localhost";
@@ -133,8 +131,7 @@ function new(self)
         } , connmt )
 end
 
--- to prevent use of casual module global variables
-getmetatable(resty.mongol).__newindex = function (table, key, val)
-    error('attempt to write to undeclared variable "' .. key .. '": '
-            .. debug.traceback())
-end
+return {
+    new = new
+}
+
