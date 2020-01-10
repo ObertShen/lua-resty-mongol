@@ -1,3 +1,5 @@
+--module("resty.mongol", package.seeall)
+
 local mod_name = (...)
 
 local assert , pcall = assert , pcall
@@ -134,4 +136,8 @@ end
 return {
     new = new
 }
-
+-- to prevent use of casual module global variables
+--getmetatable(resty.mongol).__newindex = function (table, key, val)
+ --   error('attempt to write to undeclared variable "' .. key .. '": '
+ --           .. debug.traceback())
+--end
